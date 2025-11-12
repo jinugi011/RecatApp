@@ -1,15 +1,27 @@
 import * as React from 'react';
-import {Text, TextInput, TouchableOpacity, View, StyleSheet} from 'react-native'
+import {Text, TextInput, TouchableOpacity, View, StyleSheet} from 'react-native';
+import * as NavigationService from '../navigtion/NavigationService';
 
 
-const TitleBar = () => {
+
+const TitleBar = ({menuBtnClick} : {menuBtnClick: () => void}) => {
 
     const [serach, setSearch] = React.useState(false);
+
+    const gotoSubScreen = () => {
+      NavigationService.navigate("Sub");
+      console.log("go to SubScreen");
+    }
+
+    const gototoSettingScreen = () => {
+      NavigationService.navigate("Setting");
+      console.log("go to SettingScreen");
+    }   
 
     return (
         <View style={styles.titlecontainer}>
         <View style={styles.titlebody}>
-           <TouchableOpacity style={styles.btnMenu} onPress={() => console.log('click')}>
+           <TouchableOpacity style={styles.btnMenu} onPress={() => menuBtnClick()}>
             <Text style={styles.menuText}>☰</Text>
            </TouchableOpacity> 
 
@@ -21,13 +33,13 @@ const TitleBar = () => {
              </TouchableOpacity>
            
              <View style={styles.headerIcons}>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={()=> gotoSubScreen()}>
               <Text style={styles.icon}>👤</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.iconButton}>
               <Text style={styles.icon}>🤍</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => gototoSettingScreen()}>
               <Text style={styles.icon}>🛒</Text>
             </TouchableOpacity>
           </View>
@@ -42,10 +54,10 @@ const TitleBar = () => {
 
 const styles = StyleSheet.create({
     titlecontainer: {
-        height:60, // 기준 높이 100 설정
-        flexDirection: 'column', // 가로 배치
-        paddingHorizontal: 10, // 좌우 여백
-        alignItems:'center',
+       height: 60,
+       flexDirection: 'column',
+       paddingHorizontal: 10,
+       alignItems: 'stretch', // ✅ stretch로 변경 (가로로 꽉 차게)
     },
     searchViewContainer:{
         flex:1,
@@ -54,10 +66,10 @@ const styles = StyleSheet.create({
         backgroundColor:'red',
     } ,
     titlebody: {
-        height: 30, // 기준 높이 100 설정
-        flexDirection: 'row', // 가로 배치
-        alignItems: 'stretch', // 💡 핵심: 자식 View들이 세로로 꽉 차게 (높이 100%) 늘어남
-        paddingHorizontal: 10, // 좌우 여백
+        flex: 1, // ✅ 높이 자동 확장
+        flexDirection: 'row',
+        alignItems: 'center', // ✅ 세로 중앙정렬 유지
+        justifyContent: 'space-between', // ✅ 좌→중앙→우 배치 균등
     }, 
     btnMenu: {
         width: 50, // 너비 고정

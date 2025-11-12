@@ -5,28 +5,29 @@ import ProductCard from '../components/ProductCard';
 import { Product } from '../../data/vo/Product';
 import TitleBar from '../components/TitileBar';
 import { fetchProducts } from '../../network/productApi';
-import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
 import { StackNavigationProp } from '@react-navigation/stack';
-
-
-type MainScreenNaviationProp = StackNavigationProp<RootStackParamList, 'Main'>
+import SideMenu from '../components/MenuView';
+import { menuItems } from '../../data/vo/itemVo';
+import { useMenu } from '../../data/Context/MenuContext';
+import * as NavigationService from '../navigtion/NavigationService';
 
 const MainScreen = () => {
 
    const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
    const [products, setProducts] = useState<Product[]>([]);
-   const navigation = useNavigation<MainScreenNaviationProp>();
-   
+   const { openMenu } = useMenu();
+
     const renderItemComponent = ({ item }: { item: Product }) => (
         <ProductCard item={item} 
           onPress={()=> {
             console.log("click");
-            navigation.navigate("Product", {product:item}); 
+            NavigationService.navigate("Product", {product:item}); 
           }
           }  
         />
    );
+
 
 
    const loadProducts = async () => {
@@ -53,7 +54,7 @@ const MainScreen = () => {
 
   return(
     <SafeAreaView style={{flex:1}}>
-     <TitleBar/>
+     <TitleBar menuBtnClick={()=>openMenu()}/>
     <View style={{flex:1} }>
       <FlatList
         data={products}              // 렌더링할 데이터

@@ -18,8 +18,6 @@ const HomeScreen = () => {
         const inputvalue: number = Number(value);
         setValue(inputvalue);
         
-
-
         console.log(inputvalue, ansewer);
 
         if(ansewer == value)

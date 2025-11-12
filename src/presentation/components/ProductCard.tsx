@@ -74,11 +74,11 @@ const ProductCard = ({item, onPress}: {item: Product; onPress: () => void}) => {
                         )}
                         <Text style={styles.priceText}>{item.price.toLocaleString()}원</Text>
                      </View>
-                      {item.originalPrice && (
+                      {item.originalPrice ? (
                         <Text style={styles.originalPriceText}>
                             {item.originalPrice.toLocaleString()}원
                         </Text>
-                        )}
+                      ) : <Text style={styles.originalPriceText}>,</Text>}
                 </View>    
 
         </View>
@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#9CA3AF',
     textDecorationLine: 'line-through',
+    marginLeft: 5,
   },
     
 

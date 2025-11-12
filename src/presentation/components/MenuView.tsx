@@ -1,6 +1,6 @@
 // SideMenuModal.tsx
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect , useLayoutEffect} from 'react';
 import { 
   View, 
   Text, 
@@ -11,6 +11,7 @@ import {
   Animated,
   Dimensions
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // MenuItem 타입 정의 (필요하다면 별도 타입 파일에서 임포트하세요)
 interface MenuItem {
@@ -34,29 +35,31 @@ const SideMenuModal: React.FC<SideMenuModalProps> = ({ isVisible, onClose, menuI
   // 애니메이션 설정
   const menuAnim = useRef(new Animated.Value(-sideMenuWidth)).current;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isVisible) {
       Animated.timing(menuAnim, {
         toValue: 0,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(menuAnim, {
         toValue: -sideMenuWidth,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start();
     }
   }, [isVisible, menuAnim]);
 
   return (
+      
     <Modal
       visible={isVisible}
       transparent
       animationType="none" // Animated API를 사용할 것이므로 none 설정
       onRequestClose={onClose}
     >
+      <SafeAreaView style={{flex:1}}>
       <View style={styles.modalOverlay}>
         {/* 모달 배경 (클릭 시 닫기) */}
         <TouchableOpacity
@@ -116,7 +119,9 @@ const SideMenuModal: React.FC<SideMenuModalProps> = ({ isVisible, onClose, menuI
           </View>
         </Animated.View>
       </View>
+      </SafeAreaView>
     </Modal>
+    
   );
 };
 

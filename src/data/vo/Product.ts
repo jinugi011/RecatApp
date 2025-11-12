@@ -11,4 +11,5 @@ export interface Product {
     badge?: string;
     isNew?: boolean;
     isBest?: boolean;
+    discript: string;
 }

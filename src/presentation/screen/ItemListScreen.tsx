@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useAsync } from '../hooks/useAsync';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as NavigationService from '../navigtion/NavigationService';
 
 /**
  * 아이템 타입 정의
@@ -28,7 +30,7 @@ interface Item {
  * - 아이템 필터링
  * - 최적화된 리스트 렌더링
  */
-export default function SubScreen() {
+export default function ItemListScreen() {
   const [items, setItems] = useState<Item[]>([]);
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [page, setPage] = useState(1);
@@ -177,10 +179,19 @@ export default function SubScreen() {
     </View>
   );
 
+  const gotoMainScreen = () => {
+    NavigationService.goBack();
+    console.log("go to MainScreen");
+  };
+
   return (
+    <SafeAreaView style={{flex:1}}>
     <View style={styles.container}>
       {/* 필터 버튼 */}
       <View style={styles.filterContainer}>
+        <TouchableOpacity style={{marginRight:10}} onPress={()=> gotoMainScreen()}>
+            <Text style={{fontSize:20}}>🔙</Text>
+        </TouchableOpacity> 
         {renderFilterButton('전체', 'all', items.length)}
         {renderFilterButton(
           '진행중',
@@ -211,6 +222,7 @@ export default function SubScreen() {
         windowSize={10}
       />
     </View>
+    </SafeAreaView>
   );
 }
 
