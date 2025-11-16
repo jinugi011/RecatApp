@@ -6,7 +6,11 @@ import { TouchableOpacity,
     StyleSheet,
     Dimensions} from 'react-native';
 import { Product } from '../../data/vo/Product';    
-
+import { useAppDispatch, useAppSelector } from "src/store/redux/reduxHooks";
+import {
+  setCartProduct,
+  deletCartProduct
+} from '../../store/slices/settingSlice';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 30) / 2; // 필요하다면 여기서 다시 계산
@@ -14,6 +18,23 @@ const cardWidth = (width - 30) / 2; // 필요하다면 여기서 다시 계산
 const ProductCard = ({item, onPress}: {item: Product; onPress: () => void}) => {
 
    const [likeProducts, setlikeProducts] = React.useState<Set<number>>(new Set());
+   const [cartProducts, setCartProducts] = React.useState<Set<number>>(new Set());
+
+   const settings = useAppSelector((state) => state.setting);
+   const dispatch = useAppDispatch();
+   
+   const setCartInfo = (isCart:boolean) => {
+      if(isCart == true) {
+        dispatch(setCartProduct(item));
+      }
+   };
+
+   const remveCart = (isCart: boolean) => {
+      if(isCart == true) {
+        dispatch(deletCartProduct(item));
+      }
+   };
+
 
    const toggleLike = (productID:number) => {
         setlikeProducts(prev => {
@@ -29,10 +50,23 @@ const ProductCard = ({item, onPress}: {item: Product; onPress: () => void}) => {
         
     };
 
+    const toggleCart = (ProductID:number) => {
+      setCartProducts(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(ProductID)) {
+          newSet.delete(ProductID)
+          setCartInfo(true);
+        }else{
+          newSet.add(ProductID);
+          remveCart(true);
+        }
+        return newSet;
+      });
+    };
+
+    
     return (
-    <TouchableOpacity style={styles.productCard} onPress={() =>
-      onPress()
-      }>
+    <TouchableOpacity style={styles.productCard} onPress={() => onPress()}>
         <View style={styles.imageContainer}>
             <Image source={{uri: item.image}} style={styles.productImage}/>
                 <View style={styles.badageContainer} > 
@@ -56,7 +90,13 @@ const ProductCard = ({item, onPress}: {item: Product; onPress: () => void}) => {
                <TouchableOpacity
                     style={styles.likeButton} onPress={() => toggleLike(item.id)}>
                     <Text style={styles.likeIcon}>{likeProducts.has(item.id) ? '❤️' : '🤍'}</Text>     
-                </TouchableOpacity>         
+                </TouchableOpacity>       
+
+                 <TouchableOpacity
+                    style={styles.cartButton} onPress={() => toggleCart(item.id)}>
+                    <Text style={styles.cartIcon}>{cartProducts.has(item.id) ? '🛒' : '👑'}</Text>     
+                </TouchableOpacity>     
+
 
                 <View style={styles.productInfo}>
                      <Text style={styles.brandText}>{item.brand}</Text>   
@@ -68,17 +108,17 @@ const ProductCard = ({item, onPress}: {item: Product; onPress: () => void}) => {
                         <Text style={styles.reviewText}>({item.reviewCount.toLocaleString()})</Text>
                      </View>
 
-                     <View style={styles.priceContainer}>
+                     <View style={[styles.priceContainer,{marginLeft:5}]}>
                         {item.discount && (
                              <Text style={styles.discountText}>{item.discount}%</Text>
                         )}
                         <Text style={styles.priceText}>{item.price.toLocaleString()}원</Text>
-                     </View>
-                      {item.originalPrice ? (
+                        {item.originalPrice ? (
                         <Text style={styles.originalPriceText}>
                             {item.originalPrice.toLocaleString()}원
                         </Text>
-                      ) : <Text style={styles.originalPriceText}>,</Text>}
+                      ) : <Text style={styles.originalPriceText}></Text>}
+                     </View>
                 </View>    
 
         </View>
@@ -92,7 +132,17 @@ const ProductCard = ({item, onPress}: {item: Product; onPress: () => void}) => {
 
 const styles = StyleSheet.create({
     productCard: {
-        width: cardWidth,
+         flex:1,
+        margin:8,
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        overflow: 'hidden',
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: {width: 2, height:20},
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        borderBlockColor: '#111',
     },
     imageContainer:{
         position: 'relative',
@@ -110,13 +160,15 @@ const styles = StyleSheet.create({
         top: 8,
         left: 8,
         gap: 4,
+        padding:5,
 
     },
       badgeContainer: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    gap: 4,
+      position: 'absolute',
+      top: 8,
+      left: 8,
+      gap: 4,
+      padding:5,
     },
     badge: {
         paddingHorizontal: 8,
@@ -127,6 +179,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 10,
         fontWeight: 'bold',
+        padding: 5,
     },
     likeButton: {
         position: 'absolute',
@@ -144,7 +197,26 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
   },
+  cartButton: {
+      position: 'absolute',
+      top: 48,
+      right: 8,
+      width: 32,
+      height: 32,
+      backgroundColor: '#fff',
+      borderRadius: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+  },
   likeIcon: {
+    fontSize: 16,
+  },
+  cartIcon: {
     fontSize: 16,
   },
   productInfo: {

@@ -5,16 +5,11 @@ import ProductCard from '../components/ProductCard';
 import { Product } from '../../data/vo/Product';
 import TitleBar from '../components/TitileBar';
 import { fetchProducts } from '../../network/productApi';
-import { RootStackParamList } from '../../App';
-import { StackNavigationProp } from '@react-navigation/stack';
-import SideMenu from '../components/MenuView';
-import { menuItems } from '../../data/vo/itemVo';
 import { useMenu } from '../../data/Context/MenuContext';
 import * as NavigationService from '../navigtion/NavigationService';
 
 const MainScreen = () => {
 
-   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
    const [products, setProducts] = useState<Product[]>([]);
    const { openMenu } = useMenu();
 
@@ -27,7 +22,6 @@ const MainScreen = () => {
           }  
         />
    );
-
 
 
    const loadProducts = async () => {
@@ -43,7 +37,9 @@ const MainScreen = () => {
         [{ text: '확인' }]
       );
     } finally {
-    
+      products.forEach((item, index) => {
+          console.log(item.name);  
+      });
     }
   };
 
@@ -55,7 +51,7 @@ const MainScreen = () => {
   return(
     <SafeAreaView style={{flex:1}}>
      <TitleBar menuBtnClick={()=>openMenu()}/>
-    <View style={{flex:1} }>
+     <View style={{flex:1} }>
       <FlatList
         data={products}              // 렌더링할 데이터
         renderItem={renderItemComponent}   // 완성된 렌더러 함수

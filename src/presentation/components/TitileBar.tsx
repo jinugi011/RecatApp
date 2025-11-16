@@ -14,7 +14,7 @@ const TitleBar = ({menuBtnClick} : {menuBtnClick: () => void}) => {
     }
 
     const gototoSettingScreen = () => {
-      NavigationService.navigate("Setting");
+      NavigationService.navigate('Setting');
       console.log("go to SettingScreen");
     }   
 

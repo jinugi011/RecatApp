@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Product } from "src/data/vo/Product";
+import { enableMapSet } from 'immer';
 
+enableMapSet();
 // 설정 상태 타입 정의
 export interface SettingState {
     userName: string;
@@ -9,6 +12,8 @@ export interface SettingState {
     notificationsEnabled: boolean;
     language: 'ko' | 'en' | 'jp';
 
+    cartProduct: Set<Product>;
+
     fontsize: 'small' | 'medium' | 'large';
     autoSave: boolean;
 }
@@ -17,6 +22,7 @@ const initialState: SettingState = {
     userName: 'Guest',
     email: '',
 
+    cartProduct: new Set([]),
     isDarkMode: false,
     notificationsEnabled: true,
     language: 'ko',
@@ -34,6 +40,21 @@ const settingSlice = createSlice({
         },
         setEmail(state, action: PayloadAction<string>) {
             state.email = action.payload;
+        },
+        setCartProduct(state, action: PayloadAction<Product>) {
+            if(Array.from(state.cartProduct).some(product => product.id == action.payload.id)) {
+                 state.cartProduct.add(action.payload);  
+            }
+        },
+        deletCartProduct(state, action: PayloadAction<Product>){
+          
+            const productIdToDelete = action.payload.id;
+            // Set을 배열로 변환하고 ID가 일치하는 항목을 제외하고 필터링
+            state.cartProduct = new Set(
+                Array.from(state.cartProduct).filter(
+                    product => product.id !== productIdToDelete
+                )
+            );
         },
         toggleDarkMode(state) {
             state.isDarkMode = !state.isDarkMode;
@@ -60,6 +81,8 @@ const settingSlice = createSlice({
 export const {
     setUserName,
     setEmail,
+    setCartProduct,
+    deletCartProduct,
     toggleDarkMode,
     toggleNotifications,
     setLanguage,

@@ -14,7 +14,7 @@ import { navigationRef } from './presentation/navigtion/NavigationService';
 
 //redux
 import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { store } from './store/redux/store';
 
 
 
@@ -28,6 +28,7 @@ export type RootStackParamList = {
     Product: {product? : Product};
     Home : undefined;
     Sub : undefined;
+    Setting: undefined;
 };
 
 export default function App() {
