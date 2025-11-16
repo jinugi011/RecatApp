@@ -4,6 +4,10 @@ import { enableMapSet } from 'immer';
 
 enableMapSet();
 // 설정 상태 타입 정의
+export interface CartItem extends Product {
+    quantity: number;
+}
+
 export interface SettingState {
     userName: string;
     email: string;
@@ -12,7 +16,7 @@ export interface SettingState {
     notificationsEnabled: boolean;
     language: 'ko' | 'en' | 'jp';
 
-    cartProduct: Set<Product>;
+    cartProduct: CartItem[];
 
     fontsize: 'small' | 'medium' | 'large';
     autoSave: boolean;
@@ -22,7 +26,7 @@ const initialState: SettingState = {
     userName: 'Guest',
     email: '',
 
-    cartProduct: new Set([]),
+    cartProduct: [],
     isDarkMode: false,
     notificationsEnabled: true,
     language: 'ko',
@@ -42,19 +46,35 @@ const settingSlice = createSlice({
             state.email = action.payload;
         },
         setCartProduct(state, action: PayloadAction<Product>) {
-            if(Array.from(state.cartProduct).some(product => product.id == action.payload.id)) {
-                 state.cartProduct.add(action.payload);  
-            }
+           const newPruduct = action.payload;
+
+           const existingItem = state.cartProduct.find(
+                (item) => item.id === newPruduct.id
+           );
+
+           if(existingItem) {
+            existingItem.quantity += 1;
+           }else{
+            state.cartProduct.push({...newPruduct, quantity:1});
+           }
+
         },
         deletCartProduct(state, action: PayloadAction<Product>){
-          
-            const productIdToDelete = action.payload.id;
-            // Set을 배열로 변환하고 ID가 일치하는 항목을 제외하고 필터링
-            state.cartProduct = new Set(
-                Array.from(state.cartProduct).filter(
-                    product => product.id !== productIdToDelete
-                )
+            const deleteItemID = action.payload.id;
+
+            state.cartProduct = state.cartProduct.filter(
+                (product) => product.id != deleteItemID
             );
+        },
+        updateProductQuantity(state, action: PayloadAction<{id:number, quantity:number}>) {
+            const {id, quantity} = action.payload;
+            const item = state.cartProduct.find(p => p.id === id);
+            if(item) {
+                item.quantity = quantity;
+                if(item.quantity <= 0) {
+                    state.cartProduct = state.cartProduct.filter(p => p.id === id);
+                }
+            }
         },
         toggleDarkMode(state) {
             state.isDarkMode = !state.isDarkMode;
