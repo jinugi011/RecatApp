@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {View, Text, Button, TouchableOpacity, ScrollView, StyleSheet, TextInput, FlatList, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProductCard from '../components/ProductCard';
@@ -11,7 +11,10 @@ import * as NavigationService from '../navigtion/NavigationService';
 const MainScreen = () => {
 
    const [products, setProducts] = useState<Product[]>([]);
+   const [filtered, setFiltered] = useState<Product[]>([]);
+   const [searchTerm, setSearchTerm] = useState('');
    const { openMenu } = useMenu();
+   
 
     const renderItemComponent = ({ item }: { item: Product }) => (
         <ProductCard item={item} 
@@ -22,12 +25,30 @@ const MainScreen = () => {
           }  
         />
    );
+  
+    const filterProducts = useMemo(()=>{
+      if(!searchTerm || searchTerm === '') {
+        setFiltered(products);
+        console.log("set init" + products.length);
+        return;
+      }else{
+        const filteredProducts = products.filter(p =>
+            p.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFiltered(filteredProducts);
+      };
+    }, [products, searchTerm]);
+
+    const handleProductSearch = (search:string) => {
+       setSearchTerm(search);
+    };
 
 
    const loadProducts = async () => {
     try {
       const data = await fetchProducts();
       setProducts(data);
+      setFiltered(data);
       console.log('✅ 상품 목록 로드 성공:', data.length, '개');
     } catch (error) {
       console.error('❌ 상품 목록 로드 실패:', error);
@@ -50,10 +71,10 @@ const MainScreen = () => {
 
   return(
     <SafeAreaView style={{flex:1}}>
-     <TitleBar menuBtnClick={()=>openMenu()}/>
+     <TitleBar menuBtnClick={()=>openMenu()} searchText={(query)=> handleProductSearch(query)}/>
      <View style={{flex:1} }>
       <FlatList
-        data={products}              // 렌더링할 데이터
+        data={filtered}              // 렌더링할 데이터
         renderItem={renderItemComponent}   // 완성된 렌더러 함수
         keyExtractor={(item) => String(item.id)}
         numColumns={2}               // 2열 레이아웃 설정

@@ -1,12 +1,13 @@
 import * as React from 'react';
-import {Text, TextInput, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {Text, TextInput, TouchableOpacity, View, StyleSheet, Button} from 'react-native';
 import * as NavigationService from '../navigtion/NavigationService';
 
 
 
-const TitleBar = ({menuBtnClick} : {menuBtnClick: () => void}) => {
+const TitleBar = ({menuBtnClick, searchText} : {menuBtnClick: () => void, searchText:(query:string)=> void}) => {
 
     const [serach, setSearch] = React.useState(false);
+    const [searchtxt, setSearchText] = React.useState('');
 
     const gotoSubScreen = () => {
       NavigationService.navigate("Sub");
@@ -45,7 +46,15 @@ const TitleBar = ({menuBtnClick} : {menuBtnClick: () => void}) => {
           </View>
         </View>
         { serach && (
-            <TextInput style={styles.searchInput} placeholder='검색어를 입력해주세요' placeholderTextColor="#9CA3AF"/>
+            <View style={styles.searchContainer2}>
+               <TextInput style={styles.searchInput} placeholder='검색어를 입력해주세요' 
+                onChange={event => setSearchText(event.nativeEvent.text)}
+                value={searchtxt}
+                placeholderTextColor="#9CA3AF"/>
+            <TouchableOpacity style={styles.searchBtn} onPress={() => searchText(searchtxt)}>
+                <Text style={styles.searchBtnText}>검색</Text>
+            </TouchableOpacity>    
+            </View>
         )}
         </View>
     );
@@ -111,6 +120,7 @@ const styles = StyleSheet.create({
         alignContent: 'flex-start',
         borderRadius: 8,
         borderWidth: 0.5,
+        margin:1,
         // height는 부모 stretch와 flex: 1 덕분에 별도 설정 불필요
     },
     headerIcons: {
@@ -125,6 +135,24 @@ const styles = StyleSheet.create({
     icon: {
         fontSize: 15,
         color: '#fff',
+    },
+    searchContainer2: {
+        flex: 1,
+        flexDirection: 'row',
+    },
+    searchBtn: {
+        width: 60,
+        height: 30,
+        backgroundColor: '#007AFF',
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin:1,
+    },
+    searchBtnText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: '600',
     },
 });
 
