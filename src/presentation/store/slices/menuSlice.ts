@@ -1,4 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { menuItems } from '../../data/vo/itemVo';
+import { menuItems } from '../../../data/vo/itemVo';
 
 

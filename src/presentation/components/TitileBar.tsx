@@ -1,23 +1,26 @@
 import * as React from 'react';
 import {Text, TextInput, TouchableOpacity, View, StyleSheet, Button} from 'react-native';
 import * as NavigationService from '../navigtion/NavigationService';
+import LoginScreen from '../screen/LoginModal';
 
 
 
-const TitleBar = ({menuBtnClick, searchText} : {menuBtnClick: () => void, searchText:(query:string)=> void}) => {
+const TitleBar = ({menuBtnClick, loginClick, searchText} : {
+    menuBtnClick: () => void, loginClick: ()=> void, searchText:(query:string)=> void}) => {
 
     const [serach, setSearch] = React.useState(false);
     const [searchtxt, setSearchText] = React.useState('');
-
+   
     const gotoSubScreen = () => {
       NavigationService.navigate("Sub");
       console.log("go to SubScreen");
-    }
+    };
 
-    const gototoSettingScreen = () => {
+    const gotoSettingScreen = () => {
       NavigationService.navigate('Setting');
       console.log("go to SettingScreen");
-    }   
+    };
+  
 
     return (
         <View style={styles.titlecontainer}>
@@ -26,7 +29,7 @@ const TitleBar = ({menuBtnClick, searchText} : {menuBtnClick: () => void, search
             <Text style={styles.menuText}>☰</Text>
            </TouchableOpacity> 
 
-            <Text style={styles.logotitle}> OLIVE YOUNG </Text>
+            <Text style={styles.logotitle}> SAMPLE PAGE </Text>
 
             {/* 검색창 만들기 */}
              <TouchableOpacity style={styles.iconButton} onPress={() => setSearch(!serach)}>
@@ -34,14 +37,14 @@ const TitleBar = ({menuBtnClick, searchText} : {menuBtnClick: () => void, search
              </TouchableOpacity>
            
              <View style={styles.headerIcons}>
-            <TouchableOpacity style={styles.iconButton} onPress={()=> gotoSubScreen()}>
+            <TouchableOpacity style={styles.iconButton} onPress={()=> loginClick()}>
               <Text style={styles.icon}>👤</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={()=> gotoSubScreen()}>
               <Text style={styles.icon}>🤍</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton} onPress={() => gototoSettingScreen()}>
-              <Text style={styles.icon}>🛒</Text>
+            <TouchableOpacity style={styles.iconButton} onPress={() => gotoSettingScreen()}>
+              <Text style={styles.icon}>⚙️</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -6,11 +6,11 @@ import { TouchableOpacity,
     StyleSheet,
     Dimensions} from 'react-native';
 import { Product } from '../../data/vo/Product';    
-import { useAppDispatch, useAppSelector } from "src/store/redux/reduxHooks";
+import { useAppDispatch, useAppSelector } from "src/presentation/store/redux/reduxHooks";
 import {
   setCartProduct,
   deletCartProduct
-} from '../../store/slices/settingSlice';
+} from '../store/slices/settingSlice';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 30) / 2; // 필요하다면 여기서 다시 계산

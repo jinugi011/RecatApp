@@ -12,15 +12,14 @@ const getBaseURL = () => {
     // 개발 환경
     if (Platform.OS === 'android') {
       // Android 에뮬레이터: 10.0.2.2
-      // Android 실제 기기: 실제 IP 사용
-      return 'http://192.168.219.103:8080';
+      return 'http://192.168.0.20:8080';
     } else {
       // iOS 시뮬레이터/실제 기기
-      return 'http://192.168.219.103:8080';
+     return 'http://192.168.0.20:8080';
     }
   }
   // 프로덕션 환경
-  return 'http://192.168.219.103:8080';
+  return 'http://192.168.0.20:8080';
 };
 
 // Axios 인스턴스 생성

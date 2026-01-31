@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppDispatch, useAppSelector } from "src/store/redux/reduxHooks";
+import { useAppDispatch, useAppSelector } from "src/presentation/store/redux/reduxHooks";
 import {
   setUserName,
   setEmail,
@@ -20,7 +20,7 @@ import {
   setFontsize,
   toggleAutoSave,
   resetSettings,
-} from '../../store/slices/settingSlice';
+} from '../store/slices/settingSlice';
 import * as NavigationService from '../navigtion/NavigationService';
 
 const SettingScreen = () => {
